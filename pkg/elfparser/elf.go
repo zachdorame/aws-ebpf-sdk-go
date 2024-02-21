@@ -136,13 +136,27 @@ func (b *bpfSDKClient) LoadBpfFile(path, customizedPinPath string) (map[string]B
 		return nil, nil, err
 	}
 
-	elfLoader := newElfLoader(elfFile, b.mapApi, b.progApi, customizedPinPath)
+	elfLoader := newElfLoader(elfFile, b.mapApi, b.progApi, addDots(customizedPinPath))
 
 	bpfLoadedProg, bpfLoadedMaps, err := elfLoader.doLoadELF()
 	if err != nil {
 		return nil, nil, err
 	}
 	return bpfLoadedProg, bpfLoadedMaps, nil
+}
+
+func addDots(customizedPinPath string) string {
+	var dotString strings.Builder
+
+	for _, c := range customizedPinPath {
+		if c == '.' {
+			dotString.WriteString("dot")
+		} else {
+			dotString.WriteString(string(c))
+		}
+	}
+
+	return dotString.String()
 }
 
 func (e *elfLoader) loadMap(parsedMapData []ebpf_maps.CreateEBPFMapInput) (map[string]ebpf_maps.BpfMap, error) {

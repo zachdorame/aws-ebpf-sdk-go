@@ -1,4 +1,4 @@
-module github.com/aws/aws-ebpf-sdk-go
+module github.com/zachdorame/aws-ebpf-sdk-go
 
 go 1.19
 
